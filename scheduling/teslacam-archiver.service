@@ -1,0 +1,8 @@
+[Unit]
+Description=Tesla dashcam archive: promote, build, index
+
+[Service]
+Type=oneshot
+Nice=10
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+ExecStart=%h/.local/bin/teslacam-archiver run --max-minutes 25

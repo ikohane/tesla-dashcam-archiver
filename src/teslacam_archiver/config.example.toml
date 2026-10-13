@@ -1,0 +1,65 @@
+# teslacam-archiver configuration
+# Default location: ~/.config/teslacam-archiver/config.toml  (or set $TESLACAM_CONFIG)
+#
+# The LIBRARY is one folder holding everything:
+#   incoming/    where your Raspberry Pi (Sentry USB) drops finished events
+#   events/      raw camera files, one folder per event, sorted by year
+#   composite/   one tiled video per event (all cameras in one picture)
+#   posters/     the car's own thumbnail for each event
+#   index.html   a gallery you can open in any browser; library.json for scripts
+#
+# Point the Pi's archive destination at <library>/incoming.
+# Pick ONE of the [library] blocks below. See docs/DESTINATIONS.md.
+
+[library]
+# --- A folder this computer can write -------------------------------------
+# An internal or external disk, a mounted SMB/NFS share, or a folder synced by
+# Dropbox / Google Drive / OneDrive / iCloud Drive (pair it with Sentry USB's
+# rclone archive to the same cloud folder).
+backend = "local"
+path = "~/TeslaDashcam"
+
+# --- A NAS or server over SSH (no mount needed) -----------------------------
+# Files are moved and hashed on the server and copied with rsync. The server
+# needs GNU find/cmp/mv/stat/sha256sum/timeout (Synology DSM and Linux do).
+# backend = "ssh"
+# host = "nas.local"            # name or IP address
+# user = "me"
+# key = "~/.ssh/id_ed25519"     # key-based login (ssh-copy-id me@nas.local)
+# port = 22
+# path = "/volume1/video/TeslaDashcam"   # the library folder ON THE SERVER
+# jump = "me@gateway"           # optional: reach the server through another host
+
+[car]
+# The car stamps clips with local time and no time zone; this supplies it.
+# `teslacam-archiver init` fills in this computer's zone.
+timezone = "America/New_York"
+
+# Optional: label clips by car, by date ("until" is exclusive, YYYY-MM-DD).
+# The last entry should have no "until". Without [[cars]] every clip says "Tesla".
+# [[cars]]
+# until = "2022-03-01"
+# label = "Model 3 (2018)"
+# [[cars]]
+# label = "Model Y (2022)"
+
+[build]
+encoder = "auto"        # auto = h264_videotoolbox on a Mac, libx264 elsewhere; any ffmpeg H.264 encoder works
+bitrate = "6M"          # ~450 MB per 10-minute event at 1920×1440
+segment_workers = 4     # minutes encoded in parallel; lower it on small machines
+poster_width = 480
+
+[pipeline]
+quiescent_seconds = 600     # an incoming event is complete once nothing changed for this long
+recent_gap_seconds = 75     # RecentClips: a longer gap between minutes starts a new drive
+
+[state]
+# Ledger, lock, logs and a scratch area (needs ~3 GB free while building).
+dir = "~/.local/state/teslacam-archiver"
+
+[hooks]
+# Optional shell command run after each event is built. It receives the event
+# as JSON on stdin and in $TESLACAM_EVENT_JSON, and the paths in
+# $TESLACAM_COMPOSITE and $TESLACAM_POSTER. Use it to add clips to your own
+# catalog, photo library or notification system.
+# after_event = "my-catalog add --json -"

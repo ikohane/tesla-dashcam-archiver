@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "teslacam-archiver"
+version = "0.1.0"
+description = "Archive Tesla Dashcam and Sentry Mode clips from a Raspberry Pi (Sentry USB) or USB stick into a browsable library on a NAS, a local disk, or a cloud-synced folder."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = []
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Operating System :: MacOS",
+  "Operating System :: POSIX :: Linux",
+  "Topic :: Multimedia :: Video",
+]
+
+[project.scripts]
+teslacam-archiver = "teslacam_archiver.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+teslacam_archiver = ["config.example.toml"]

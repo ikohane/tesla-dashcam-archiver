@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!-- Every 30 minutes: promote, build, index. Replace /Users/YOU and the
+     teslacam-archiver path (`which teslacam-archiver`). -->
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.example.teslacam-archiver</string>
+  <key>ProgramArguments</key><array>
+    <string>/usr/bin/caffeinate</string><string>-i</string>
+    <string>/Users/YOU/.local/bin/teslacam-archiver</string>
+    <string>run</string><string>--max-minutes</string><string>25</string>
+  </array>
+  <key>EnvironmentVariables</key><dict>
+    <!-- ffmpeg/ffprobe and Homebrew rsync must be on PATH -->
+    <key>PATH</key><string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>StartInterval</key><integer>1800</integer>
+  <key>RunAtLoad</key><true/>
+  <key>Nice</key><integer>10</integer>
+  <key>StandardOutPath</key><string>/Users/YOU/Library/Logs/teslacam-archiver.log</string>
+  <key>StandardErrorPath</key><string>/Users/YOU/Library/Logs/teslacam-archiver.log</string>
+</dict></plist>
